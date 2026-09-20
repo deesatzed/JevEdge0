@@ -1,0 +1,672 @@
+{
+  "generated_at": "2026-09-19T11:02:30",
+  "model": "edge0-35b",
+  "input": "jevedge0/examples/decisions.jsonl",
+  "rows": 6,
+  "stability_trials": 4,
+  "labels_supplied": true,
+  "wall_seconds": 150.61,
+  "summaries": [
+    {
+      "method": "edge0-logit",
+      "rows": 6,
+      "unparsed": 0,
+      "abstained": 1,
+      "median_forward_seconds": 1.0978874170104973,
+      "permutation_stable_fraction": 1.0,
+      "median_probability_spread": 0.0043527906416304255,
+      "labeled_rows": 6,
+      "accuracy": 1.0,
+      "calibration": [
+        {
+          "range": "0.8-1.0",
+          "count": 6,
+          "mean_score": 0.9691168066784045,
+          "observed_accuracy": 1.0
+        }
+      ],
+      "mean_top_score": 0.9691168066784045,
+      "calibration_gap": -0.030883193321595503
+    },
+    {
+      "method": "edge0-judgment",
+      "rows": 6,
+      "unparsed": 0,
+      "abstained": 1,
+      "median_forward_seconds": 8.366093187534716,
+      "labeled_rows": 6,
+      "accuracy": 1.0
+    },
+    {
+      "method": "comparator",
+      "rows": 6,
+      "unparsed": 0,
+      "abstained": 1,
+      "permutation_stable_fraction": 1.0,
+      "median_probability_spread": 0.004894757256623694,
+      "labeled_rows": 6,
+      "accuracy": 1.0,
+      "calibration": [
+        {
+          "range": "0.8-1.0",
+          "count": 6,
+          "mean_score": 0.9723655815831399,
+          "observed_accuracy": 1.0
+        }
+      ],
+      "mean_top_score": 0.9723655815831399,
+      "calibration_gap": -0.027634418416860096
+    }
+  ],
+  "records": {
+    "edge0-logit": [
+      {
+        "id": "ed-strain-1",
+        "choice": "high",
+        "option_ids": [
+          "low",
+          "moderate",
+          "high",
+          "insufficient"
+        ],
+        "probabilities": {
+          "low": 0.0007057612811335949,
+          "moderate": 0.004602141656404621,
+          "high": 0.9937858816393721,
+          "insufficient": 0.0009062154230896384
+        },
+        "margin": 0.9891837399829675,
+        "entropy": 0.04243029500840953,
+        "input_tokens": 196,
+        "forward_seconds": 1.9158197910292074,
+        "total_seconds": 1.927764750085771,
+        "prompt_sha256": "1173900be8e60aacdbb819c6edde0a87bbe6c30d0321ab2ae3a3e9a2c30f41e4",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "high",
+            "high",
+            "high",
+            "high"
+          ],
+          "majority_choice": "high",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "low": 0.0003732168567240616,
+            "moderate": 0.0046506324054008995,
+            "high": 0.994392153035391,
+            "insufficient": 0.0005839977024840229
+          },
+          "max_probability_spread": 0.00820137571580762,
+          "probability_spread": {
+            "low": 0.0005476898602843634,
+            "moderate": 0.00820137571580762,
+            "high": 0.007998742575637818,
+            "insufficient": 0.0006111468704774998
+          },
+          "mean_margin": 0.9897415206299901,
+          "mean_entropy": 0.03786363992501508
+        }
+      },
+      {
+        "id": "ed-escalate-1",
+        "choice": "activate",
+        "option_ids": [
+          "activate",
+          "monitor",
+          "insufficient"
+        ],
+        "probabilities": {
+          "activate": 0.9796292071670796,
+          "monitor": 0.017942534803329194,
+          "insufficient": 0.0024282580295913376
+        },
+        "margin": 0.9616866723637504,
+        "entropy": 0.10692082633819404,
+        "input_tokens": 185,
+        "forward_seconds": 1.0648884589318186,
+        "total_seconds": 1.0658390000462532,
+        "prompt_sha256": "9c2e9dfee01adc7efe7c7b2a409596490f8ce5c1f22afd028d01450249ea1d0f",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "activate",
+            "activate",
+            "activate",
+            "activate"
+          ],
+          "majority_choice": "activate",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "activate": 0.9855279105799377,
+            "monitor": 0.011555842067781466,
+            "insufficient": 0.002916247352280852
+          },
+          "max_probability_spread": 0.013345814350376455,
+          "probability_spread": {
+            "activate": 0.012986020491123629,
+            "monitor": 0.013345814350376455,
+            "insufficient": 0.005208165132098109
+          },
+          "mean_margin": 0.9739720685121562,
+          "mean_entropy": 0.08293590526751735
+        }
+      },
+      {
+        "id": "ed-thin-1",
+        "choice": "insufficient",
+        "option_ids": [
+          "activate",
+          "monitor",
+          "insufficient"
+        ],
+        "probabilities": {
+          "activate": 0.01200654505960676,
+          "monitor": 0.14626966267757346,
+          "insufficient": 0.8417237922628198
+        },
+        "margin": 0.6954541295852463,
+        "entropy": 0.479303082437639,
+        "input_tokens": 125,
+        "forward_seconds": 0.9171489590080455,
+        "total_seconds": 0.9178276660386473,
+        "prompt_sha256": "d5ca151b034ad641b61a99a67cb371a162849d2c0d2eda1ff74f02d385e11659",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "insufficient",
+            "insufficient",
+            "insufficient",
+            "insufficient"
+          ],
+          "majority_choice": "insufficient",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "activate": 0.05378253166751291,
+            "monitor": 0.07922790695665588,
+            "insufficient": 0.8669895613758312
+          },
+          "max_probability_spread": 0.16680398175821431,
+          "probability_spread": {
+            "activate": 0.0951353448201616,
+            "monitor": 0.12605506576518852,
+            "insufficient": 0.16680398175821431
+          },
+          "mean_margin": 0.7877616544191752,
+          "mean_entropy": 0.48181646812635576
+        }
+      },
+      {
+        "id": "drift-1",
+        "choice": "drift",
+        "option_ids": [
+          "drift",
+          "no_drift",
+          "insufficient"
+        ],
+        "probabilities": {
+          "drift": 0.9995661600621801,
+          "no_drift": 0.00023045984151382154,
+          "insufficient": 0.00020338009630608428
+        },
+        "margin": 0.9993357002206663,
+        "entropy": 0.004092766064873221,
+        "input_tokens": 186,
+        "forward_seconds": 1.2144550830125809,
+        "total_seconds": 1.2155067500425503,
+        "prompt_sha256": "2023dbc0d8112539274b728662ced198a66b4fea953f58cb0bad39d9897096e9",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "drift",
+            "drift",
+            "drift",
+            "drift"
+          ],
+          "majority_choice": "drift",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "drift": 0.9996770604615098,
+            "no_drift": 0.00015575663662869077,
+            "insufficient": 0.00016718290186147264
+          },
+          "max_probability_spread": 0.0005042055674532309,
+          "probability_spread": {
+            "drift": 0.0005042055674532309,
+            "no_drift": 0.00016441034277718986,
+            "insufficient": 0.0003398359129993319
+          },
+          "mean_margin": 0.9995098775596484,
+          "mean_entropy": 0.003142332518543543
+        }
+      },
+      {
+        "id": "deploy-1",
+        "choice": "yes",
+        "option_ids": [
+          "yes",
+          "no",
+          "insufficient"
+        ],
+        "probabilities": {
+          "yes": 0.9999976868007828,
+          "no": 1.370955915082599e-06,
+          "insufficient": 9.422433021313367e-07
+        },
+        "margin": 0.9999963158448677,
+        "entropy": 3.3894732563311144e-05,
+        "input_tokens": 142,
+        "forward_seconds": 1.130886375089176,
+        "total_seconds": 1.1316598749253899,
+        "prompt_sha256": "7ac35785358f0c656eeb741ca0a51f03e0133753a71e2879a18ad0ab56d0c024",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "yes",
+            "yes",
+            "yes",
+            "yes"
+          ],
+          "majority_choice": "yes",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "yes": 0.9999975848757912,
+            "no": 1.3360452334647243e-06,
+            "insufficient": 1.0790789754868708e-06
+          },
+          "max_probability_spread": 1.700105442392942e-06,
+          "probability_spread": {
+            "yes": 1.3564713351454927e-06,
+            "no": 3.4363410726792894e-07,
+            "insufficient": 1.700105442392942e-06
+          },
+          "mean_margin": 0.9999962488305577,
+          "mean_entropy": 3.5312097972432294e-05
+        }
+      },
+      {
+        "id": "route-1",
+        "choice": "account_access",
+        "option_ids": [
+          "account_access",
+          "billing",
+          "sales"
+        ],
+        "probabilities": {
+          "account_access": 0.9999981121381927,
+          "billing": 1.7603429888655988e-06,
+          "sales": 1.27518818410372e-07
+        },
+        "margin": 0.9999963517952039,
+        "entropy": 2.7236769434073105e-05,
+        "input_tokens": 130,
+        "forward_seconds": 0.9889904170995578,
+        "total_seconds": 0.9898146250052378,
+        "prompt_sha256": "016267542103ab91422c425d2234ec7e1b9aef77f9d3e481b96db2de7cca470a",
+        "prompt_version": "direct-options-v1",
+        "model": {
+          "name": "edge0-35b",
+          "source": "models/edge0-35b",
+          "backend": "mlx"
+        },
+        "method": "option_logit_readout",
+        "readout": "last-position next-token logits restricted to declared answer-slot tokens",
+        "probability_status": "conditional option score; uncalibrated as decision confidence",
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "account_access",
+            "account_access",
+            "account_access",
+            "account_access"
+          ],
+          "majority_choice": "account_access",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "account_access": 0.9999984236030763,
+            "billing": 1.2179114718263863e-06,
+            "sales": 3.58485451865679e-07
+          },
+          "max_probability_spread": 2.1920660576713047e-06,
+          "probability_spread": {
+            "account_access": 2.1920660576713047e-06,
+            "billing": 1.913690791171671e-06,
+            "sales": 6.65564731479591e-07
+          },
+          "mean_margin": 0.9999972056916046,
+          "mean_entropy": 2.3482786488246105e-05
+        }
+      }
+    ],
+    "edge0-judgment": [
+      {
+        "id": "ed-strain-1",
+        "choice": "high",
+        "parsed": true,
+        "forward_seconds": 11.237634083023295,
+        "reasoning": "The evidence provides specific quantitative data regarding the current state of the Emergency Department (ED):\n1.  **Current Occupancy**: 71 patients are present (admitted boarding, ICU wait, waiting room).\n2.  **Demand Forecast**: Predicted arrivals exceed available treatment spaces for the next four hours. This explicitly indicates that demand for physical space/treatment capacity will surpass the available capacity.\n3.  **Staffing**: Nursing staffing is two positions below plan. This indicates a deficit in the operational workforce needed to manage the volume.\n\nWhen demand exceeds available treatment spaces and staffing is below the plan, the operational capacity is underpinning the demand. The combination of \"demand exceeds available treatment spaces\" and \"staffing below plan\" strongly implies that the system will struggle to manage the influx, leading to delays, bottlenecks, and potentially inability to treat all patients in the timeframe predicted. This aligns with the definition of \"high\" strain, where demand exceeds available staffed capacity.\n\nCHOICE: high"
+      },
+      {
+        "id": "ed-escalate-1",
+        "choice": "activate",
+        "parsed": true,
+        "forward_seconds": 14.76947412500158,
+        "reasoning": "To determine whether the escalation workflow should be activated, we must evaluate the current evidence against the specific criteria provided in the written protocol.\n\nThe protocol defines four independent conditions that trigger escalation. The requirement is that **any two** of these conditions must be met simultaneously. Let's analyze the current state of the hospital against each condition:\n\n1.  **Census above 65**: The current ED census is 71. Since 71 is greater than 65, this condition is **met**.\n2.  **Boarders above 12**: There are 14 admitted patients boarding. Since 14 is greater than 12, this condition is **met**.\n3.  **Staffing two or more below plan**: Nursing staffing is two positions below plan. Since \"two or more\" includes exactly two, this condition is **met**.\n4.  **Predicted arrivals exceeding spaces for three or more hours**: The evidence does not provide information regarding predicted arrivals or available spaces. Therefore, this condition cannot be determined to be met or not met based on the provided text.\n\nSince three of the four conditions are explicitly met (census, boarders, and staffing), the requirement for \"any two\" conditions to be met is satisfied. Specifically, the combination of high census, high boarders, and low staffing satisfies the threshold.\n\nCHOICE: activate"
+      },
+      {
+        "id": "ed-thin-1",
+        "choice": "insufficient",
+        "parsed": true,
+        "forward_seconds": 5.494552292046137,
+        "reasoning": "The evidence states that the emergency department is open. This information confirms the availability of the facility but does not provide any details regarding the current patient status, clinical urgency, or specific metrics that would trigger the predefined operational escalation workflow. Without knowing the criteria for activation (e.g., specific triad scores, number of beds occupied, severity of cases), it is impossible to determine if the threshold is met. Therefore, the evidence is insufficient to make a decision.\n\nCHOICE: insufficient"
+      },
+      {
+        "id": "drift-1",
+        "choice": "drift",
+        "parsed": true,
+        "forward_seconds": 14.249756708042696,
+        "reasoning": "The evidence provides two key metrics: the Population Stability Index (PSI) and the Mean Absolute Error (MAE).\n\n1.  **Population Stability Index (PSI):** The PSI measures the difference between the current distribution of features/predictors and the training distribution. An increase from 0.06 to 0.31 over the last six weeks indicates a significant change in the input data distribution. Generally, a PSI greater than 0.1 or 0.2 is considered indicative of substantial drift. The value of 0.31 is clearly exceeding these thresholds, suggesting that the underlying population has shifted in a way that impacts the model's assumptions.\n\n2.  **Mean Absolute Error (MAE):** The MAE has increased from 4.1 to 9.8 arrivals per hour. This is a substantial increase in performance degradation (nearly doubling the error). While performance decay can be a symptom of drift, it alone is not definitive proof of drift (it could be due to other factors like data quality issues or seasonal variance). However, the fact that the MAE has degraded significantly *in conjunction* with a high PSI strongly suggests that the model is failing to generalize to the new data distribution.\n\nCombining these, the high PSI confirms the presence of distribution drift, and the increased MAE confirms that this drift is negatively impacting model performance. Therefore, there is clear evidence that the model's performance is degrading due to a shift in the data distribution, necessitating revalidation.\n\nCHOICE: drift"
+      },
+      {
+        "id": "deploy-1",
+        "choice": "yes",
+        "parsed": true,
+        "forward_seconds": 4.719293207977898,
+        "reasoning": "The evidence states that the deployment completed at a specific time, health checks passed in all three zones, and no rollback was initiated. These indicators typically signify that the system is stable and the intended changes have been applied successfully. While there are no specific details about the functional behavior of every service, the combination of successful completion, passing health checks, and the absence of a rollback strongly supports the conclusion that the deployment was successful.\n\nCHOICE: yes"
+      },
+      {
+        "id": "route-1",
+        "choice": "account_access",
+        "parsed": true,
+        "forward_seconds": 4.273006458999589,
+        "reasoning": "The evidence describes a customer requesting a password reset because the confirmation email did not arrive. This issue directly relates to the user's ability to authenticate and access their account. It is not a billing issue (payment or invoice), nor is it a sales issue (product evaluation or purchase). Therefore, the request falls squarely within the domain of account access and authentication support.\n\nCHOICE: account_access"
+      }
+    ],
+    "comparator": [
+      {
+        "id": "ed-strain-1",
+        "choice": "high",
+        "probabilities": {
+          "low": 0.0006231456079014109,
+          "moderate": 0.0040634197947532515,
+          "high": 0.9942860411788549,
+          "insufficient": 0.001027393418490418
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "high",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "high",
+            "high",
+            "high",
+            "high"
+          ],
+          "majority_choice": "high",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "low": 0.00034695955360983656,
+            "moderate": 0.004368379742057757,
+            "high": 0.9946506606912203,
+            "insufficient": 0.0006340000131120801
+          },
+          "max_probability_spread": 0.008887904878455033,
+          "probability_spread": {
+            "low": 0.000514407977495877,
+            "moderate": 0.008790666567615579,
+            "high": 0.008887904878455033,
+            "insufficient": 0.0006954394971309451
+          },
+          "mean_margin": 0.9902822809491626,
+          "mean_entropy": 0.03650241878616054
+        }
+      },
+      {
+        "id": "ed-escalate-1",
+        "choice": "activate",
+        "probabilities": {
+          "activate": 0.9840634002167641,
+          "monitor": 0.014036910521977072,
+          "insufficient": 0.001899689261258756
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "activate",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "activate",
+            "activate",
+            "activate",
+            "activate"
+          ],
+          "majority_choice": "activate",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "activate": 0.984157542232243,
+            "monitor": 0.012965656992932577,
+            "insufficient": 0.0028768007748243983
+          },
+          "max_probability_spread": 0.015008135159299218,
+          "probability_spread": {
+            "activate": 0.015008135159299218,
+            "monitor": 0.01198718341011868,
+            "insufficient": 0.0047876394455407196
+          },
+          "mean_margin": 0.9711918852393104,
+          "mean_entropy": 0.08889030885259587
+        }
+      },
+      {
+        "id": "ed-thin-1",
+        "choice": "insufficient",
+        "probabilities": {
+          "activate": 0.012216511941383705,
+          "monitor": 0.13133988096967547,
+          "insufficient": 0.8564436070889409
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "insufficient",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "insufficient",
+            "insufficient",
+            "insufficient",
+            "insufficient"
+          ],
+          "majority_choice": "insufficient",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "activate": 0.044957060354502254,
+            "monitor": 0.07145650961624576,
+            "insufficient": 0.883586430029252
+          },
+          "max_probability_spread": 0.13392682099111874,
+          "probability_spread": {
+            "activate": 0.07972097738362383,
+            "monitor": 0.09849636913891126,
+            "insufficient": 0.13392682099111874
+          },
+          "mean_margin": 0.8121299204130062,
+          "mean_entropy": 0.4373669206647048
+        }
+      },
+      {
+        "id": "drift-1",
+        "choice": "drift",
+        "probabilities": {
+          "drift": 0.9994036346786171,
+          "no_drift": 0.0002611027517581783,
+          "insufficient": 0.00033526256962461084
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "drift",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "drift",
+            "drift",
+            "drift",
+            "drift"
+          ],
+          "majority_choice": "drift",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "drift": 0.9995681295778585,
+            "no_drift": 0.0001766104711024178,
+            "insufficient": 0.00025525995103909327
+          },
+          "max_probability_spread": 0.0009016096347923552,
+          "probability_spread": {
+            "drift": 0.0009016096347923552,
+            "no_drift": 0.0002997847680113801,
+            "insufficient": 0.0006018248667809451
+          },
+          "mean_margin": 0.9993128696268193,
+          "mean_entropy": 0.004069791641919199
+        }
+      },
+      {
+        "id": "deploy-1",
+        "choice": "yes",
+        "probabilities": {
+          "yes": 0.9999978478920026,
+          "no": 1.2098645435393976e-06,
+          "insufficient": 9.422434539188108e-07
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "yes",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "yes",
+            "yes",
+            "yes",
+            "yes"
+          ],
+          "majority_choice": "yes",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "yes": 0.9999975598146731,
+            "no": 1.4564477191071625e-06,
+            "insufficient": 9.837376077998368e-07
+          },
+          "max_probability_spread": 1.4852394482913454e-06,
+          "probability_spread": {
+            "yes": 1.0440052042870462e-06,
+            "no": 9.270281791042338e-07,
+            "insufficient": 1.4852394482913454e-06
+          },
+          "mean_margin": 0.999996103366954,
+          "mean_entropy": 3.562109300601841e-05
+        }
+      },
+      {
+        "id": "route-1",
+        "choice": "account_access",
+        "probabilities": {
+          "account_access": 0.99999895844366,
+          "billing": 9.422445003310923e-07,
+          "sales": 9.931183968257845e-08
+        },
+        "action": "act",
+        "agreement": true,
+        "judgment_choice": "account_access",
+        "reasons": [],
+        "stability": {
+          "trials": 4,
+          "stable_across_permutations": true,
+          "winners": [
+            "account_access",
+            "account_access",
+            "account_access",
+            "account_access"
+          ],
+          "majority_choice": "account_access",
+          "majority_fraction": 1.0,
+          "mean_probabilities": {
+            "account_access": 0.9999983786540818,
+            "billing": 1.1397860746166272e-06,
+            "sales": 4.815598436635063e-07
+          },
+          "max_probability_spread": 3.2870459054645806e-06,
+          "probability_spread": {
+            "account_access": 3.2870459054645806e-06,
+            "billing": 2.692066084318537e-06,
+            "sales": 8.890840363134704e-07
+          },
+          "mean_margin": 0.9999972388680072,
+          "mean_entropy": 2.422382367814876e-05
+        }
+      }
+    ]
+  },
+  "baselines_note": "JEV-CPU 0.6B and JEV MLX 4B figures are not produced here. Run them with that project's own semif-score CLI on this same input file and merge, so baseline numbers come from its code.",
+  "probability_note": "Reported probabilities are conditional option scores over the declared options. They are not calibrated real-world confidence."
+}

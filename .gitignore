@@ -1,0 +1,32 @@
+# Model weights — NEVER commit. Checkpoints are tens of gigabytes.
+models/
+*.safetensors
+*.gguf
+*.bin
+
+# Runtime data: conversations, documents, memory, audit log.
+# This is personal content and must not be published.
+.jevedge0/
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+
+# Virtualenvs
+.venv/
+venv/
+
+# Logs and scratch output
+*.log
+results-*.jsonl
+
+# macOS
+.DS_Store

@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JevEdge0</title>
+<style>
+:root{
+  --bg:#f7f7f5; --panel:#fff; --ink:#1a1a18; --muted:#6b6b66;
+  --line:#e3e3df; --accent:#3b5bdb; --accent-soft:#eef1fd;
+  --ok:#2f7d54; --warn:#9a6209; --bad:#a8342a; --ask:#6b5ba8;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#16161a; --panel:#1e1e24; --ink:#eceCef; --muted:#9a9aa3;
+    --line:#2e2e37; --accent:#8da2fb; --accent-soft:#242a40;
+    --ok:#6bd39a; --warn:#e0b054; --bad:#f08b80; --ask:#b3a4e8;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16161a; --panel:#1e1e24; --ink:#ececef; --muted:#9a9aa3;
+  --line:#2e2e37; --accent:#8da2fb; --accent-soft:#242a40;
+  --ok:#6bd39a; --warn:#e0b054; --bad:#f08b80; --ask:#b3a4e8;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 20px 12px;
+  background:var(--panel);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:20}
+h1{font-size:15px;margin:0;letter-spacing:.3px;font-weight:650}
+h1 span{color:var(--muted);font-weight:400}
+nav{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto}
+nav button{border:1px solid transparent;background:none;color:var(--muted);
+  padding:6px 13px;border-radius:7px;cursor:pointer;font-size:13px;
+  font-family:inherit}
+nav button:hover{color:var(--ink);background:var(--bg)}
+nav button.on{background:var(--accent-soft);color:var(--accent);
+  border-color:var(--accent)}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 60px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:16px;margin-bottom:14px}
+.card h2{font-size:13px;margin:0 0 12px;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--muted);font-weight:600}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{resize:vertical;min-height:70px}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);
+  outline-offset:-1px;border-color:transparent}
+button.go{background:var(--accent);color:#fff;border:none;padding:9px 18px;
+  border-radius:8px;cursor:pointer;font:inherit;font-weight:550}
+button.go:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:none;border:1px solid var(--line);color:var(--ink);
+  padding:6px 12px;border-radius:7px;cursor:pointer;font:inherit;font-size:12px}
+button.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.row>*{flex:1;min-width:180px}
+.row .narrow{flex:0 0 120px;min-width:100px}
+.opt{display:flex;gap:8px;margin-bottom:7px;align-items:center}
+.opt input:first-child{flex:0 0 150px;min-width:110px;font-family:var(--mono);
+  font-size:12px}
+.opt button{flex:0 0 auto;background:none;border:none;color:var(--muted);
+  cursor:pointer;font-size:17px;padding:0 6px;line-height:1}
+.opt button:hover{color:var(--bad)}
+.bar{height:22px;background:var(--bg);border-radius:5px;overflow:hidden;
+  position:relative;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent);opacity:.30}
+.bar.win i{opacity:.85}
+.bar b{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:space-between;padding:0 9px;font-size:12px;font-weight:500}
+.bar b em{font-style:normal;font-family:var(--mono);color:var(--muted)}
+.bar.win b em{color:var(--ink)}
+.plist{display:grid;gap:6px;margin:12px 0}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);
+  font-size:12px;color:var(--muted);margin-top:10px}
+.verdict{border-left:3px solid var(--muted);padding:11px 14px;margin:12px 0;
+  border-radius:0 8px 8px 0;background:var(--bg)}
+.verdict h3{margin:0 0 5px;font-size:13px;letter-spacing:.5px}
+.verdict.act{border-color:var(--ok)}.verdict.act h3{color:var(--ok)}
+.verdict.ask{border-color:var(--ask)}.verdict.ask h3{color:var(--ask)}
+.verdict.abstain{border-color:var(--warn)}.verdict.abstain h3{color:var(--warn)}
+.verdict.escalate{border-color:var(--bad)}.verdict.escalate h3{color:var(--bad)}
+.verdict ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--muted)}
+.chat{display:flex;flex-direction:column;gap:11px;min-height:150px;
+  max-height:52vh;overflow-y:auto;padding-right:4px}
+.msg{padding:10px 13px;border-radius:10px;max-width:86%;white-space:pre-wrap;
+  word-wrap:break-word;overflow-wrap:anywhere}
+.msg.user{background:var(--accent-soft);align-self:flex-end}
+.msg.assistant{background:var(--bg);border:1px solid var(--line);
+  align-self:flex-start}
+.msg.event{align-self:center;max-width:100%;background:none;color:var(--muted);
+  font-family:var(--mono);font-size:11.5px;padding:2px}
+.cites{margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);
+  font-size:12px;color:var(--muted)}
+.cites div{margin-top:3px}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11px;
+  font-family:var(--mono);border:1px solid var(--line);color:var(--muted)}
+.pill.automatic{color:var(--ok);border-color:var(--ok)}
+.pill.confirm{color:var(--warn);border-color:var(--warn)}
+.pill.disabled{color:var(--bad);border-color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--line);
+  vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;
+  letter-spacing:.5px}
+td.mono{font-family:var(--mono);font-size:12px}
+.scroll{overflow-x:auto}
+.empty{color:var(--muted);padding:20px;text-align:center;font-size:13px}
+.note{font-size:12px;color:var(--muted);margin-top:10px;font-style:italic}
+.err{color:var(--bad);font-size:13px;margin-top:8px}
+.ok{color:var(--ok);font-size:13px;margin-top:8px}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid var(--line);
+  border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;
+  vertical-align:-1px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.hint{font-size:12px;color:var(--muted);margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JevEdge0 <span id="modelName">—</span></h1>
+  <nav>
+    <button data-view="decide" class="on">Decide</button>
+    <button data-view="chat">Assistant</button>
+    <button data-view="knowledge">Knowledge</button>
+    <button data-view="memory">Memory</button>
+    <button data-view="tools">Tools</button>
+    <button data-view="audit">Audit</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- DECIDE -->
+<section class="view on" id="view-decide">
+  <div class="card">
+    <h2>Typed decision</h2>
+    <p class="hint">The model scores only the options you declare, by reading
+      the logits of the answer letters. It generates no text.</p>
+    <label for="dState">Evidence</label>
+    <textarea id="dState" placeholder="What is known…"></textarea>
+    <label for="dCriterion">Criterion</label>
+    <input id="dCriterion" placeholder="The question to apply to the evidence">
+    <label>Options</label>
+    <div id="dOptions"></div>
+    <button class="ghost" id="addOpt">+ option</button>
+    <div class="row" style="margin-top:14px">
+      <div class="narrow">
+        <label for="dTrials">Orderings</label>
+        <input id="dTrials" type="number" value="4" min="1" max="12">
+      </div>
+      <div class="narrow">
+        <label for="dMode">Mode</label>
+        <select id="dMode">
+          <option value="decide">Logit only</option>
+          <option value="compare">Dual channel</option>
+        </select>
+      </div>
+      <div style="flex:0 0 auto">
+        <button class="go" id="runDecide">Run decision</button>
+      </div>
+    </div>
+    <div id="dErr" class="err"></div>
+  </div>
+  <div class="card" id="dResult" hidden></div>
+</section>
+
+<!-- CHAT -->
+<section class="view" id="view-chat">
+  <div class="card">
+    <h2>Assistant</h2>
+    <div class="row" style="margin-bottom:12px">
+      <select id="convSelect"></select>
+      <div style="flex:0 0 auto;display:flex;gap:6px">
+        <button class="ghost" id="newConv">New</button>
+        <button class="ghost" id="proposeMem">Suggest memories</button>
+      </div>
+    </div>
+    <div class="chat" id="chatLog"></div>
+    <div class="row" style="margin-top:14px">
+      <textarea id="chatInput" rows="2"
+        placeholder="Ask anything. Tools and documents are used when helpful."></textarea>
+      <div style="flex:0 0 auto"><button class="go" id="sendChat">Send</button></div>
+    </div>
+    <label style="display:flex;gap:7px;align-items:center;margin-top:9px">
+      <input type="checkbox" id="useDocs" style="width:auto">
+      <span style="font-size:12px">Answer only from indexed documents (with
+        citations, or abstain)</span>
+    </label>
+    <div id="cErr" class="err"></div>
+  </div>
+</section>
+
+<!-- KNOWLEDGE -->
+<section class="view" id="view-knowledge">
+  <div class="card">
+    <h2>Add documents</h2>
+    <p class="hint">Give a file or folder path on this machine. PDF, DOCX,
+      Markdown, HTML, CSV and text are supported.</p>
+    <div class="row">
+      <input id="kPath" placeholder="~/Documents/protocols">
+      <input id="kColl" class="narrow" placeholder="collection" value="default">
+      <div style="flex:0 0 auto"><button class="go" id="ingestBtn">Ingest</button></div>
+    </div>
+    <div id="kMsg"></div>
+  </div>
+  <div class="card">
+    <h2>Search</h2>
+    <div class="row">
+      <input id="kQuery" placeholder="Search indexed passages">
+      <div style="flex:0 0 auto"><button class="go" id="searchBtn">Search</button></div>
+    </div>
+    <div id="kResults"></div>
+  </div>
+  <div class="card">
+    <h2>Indexed documents</h2>
+    <div class="scroll"><table id="docTable"></table></div>
+  </div>
+</section>
+
+<!-- MEMORY -->
+<section class="view" id="view-memory">
+  <div class="card">
+    <h2>Durable memory</h2>
+    <p class="hint">Nothing is remembered until you approve it. Everything here
+      is editable and removable.</p>
+    <div class="scroll"><table id="memTable"></table></div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="view" id="view-tools">
+  <div class="card">
+    <h2>Tools and permissions</h2>
+    <p class="hint">Automatic runs without asking. Confirm requires your
+      approval each time. Disabled is refused.</p>
+    <div class="scroll"><table id="toolTable"></table></div>
+  </div>
+</section>
+
+<!-- AUDIT -->
+<section class="view" id="view-audit">
+  <div class="card">
+    <h2>Tool audit log</h2>
+    <p class="hint">Every invocation: executed, refused, or failed.</p>
+    <div class="scroll"><table id="auditTable"></table></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (t, c, x) => { const n = document.createElement(t);
+  if (c) n.className = c; if (x !== undefined) n.textContent = x; return n; };
+const esc = s => String(s ?? '').replace(/[&<>"']/g,
+  m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+async function api(path, opts) {
+  const r = await fetch(path, Object.assign({
+    headers: {'Content-Type': 'application/json'}}, opts || {}));
+  const body = await r.json().catch(() => ({}));
+  if (body && body.error) throw new Error(body.error.message || 'request failed');
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return body;
+}
+
+/* ---- navigation ---- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  $('#view-' + b.dataset.view).classList.add('on');
+  const load = {knowledge: loadDocs, memory: loadMem, tools: loadTools,
+                audit: loadAudit}[b.dataset.view];
+  if (load) load();
+});
+
+/* ---- decide ---- */
+function addOption(id = '', desc = '') {
+  const row = el('div', 'opt');
+  const a = el('input'); a.placeholder = 'option_id'; a.value = id;
+  const b = el('input'); b.placeholder = 'What this option means'; b.value = desc;
+  const x = el('button', '', '×');
+  x.title = 'remove'; x.onclick = () => row.remove();
+  row.append(a, b, x); $('#dOptions').append(row);
+}
+$('#addOpt').onclick = () => addOption();
+addOption('low', 'Capacity should comfortably exceed demand.');
+addOption('moderate', 'Demand may temporarily approach capacity.');
+addOption('high', 'Demand is likely to exceed available staffed capacity.');
+addOption('insufficient', 'The supplied evidence is insufficient to decide.');
+
+function readOptions() {
+  return [...$('#dOptions').children].map(r => {
+    const [a, b] = r.querySelectorAll('input');
+    return {id: a.value.trim(), description: b.value.trim()};
+  }).filter(o => o.id && o.description);
+}
+
+function probBars(probabilities, winner) {
+  const box = el('div', 'plist');
+  const entries = Object.entries(probabilities)
+    .sort((x, y) => y[1] - x[1]);
+  for (const [id, p] of entries) {
+    const bar = el('div', 'bar' + (id === winner ? ' win' : ''));
+    const fill = el('i'); fill.style.width = (p * 100).toFixed(2) + '%';
+    const label = el('b');
+    label.append(el('span', '', id), el('em', '', (p * 100).toFixed(2) + '%'));
+    bar.append(fill, label); box.append(bar);
+  }
+  return box;
+}
+
+function renderDecision(d, into) {
+  into.append(el('h2', '', 'Result'));
+  into.append(probBars(d.probabilities, d.choice));
+  const meta = el('div', 'meta');
+  meta.append(el('span', '', `margin ${d.margin.toFixed(3)}`),
+              el('span', '', `entropy ${d.entropy.toFixed(3)}`),
+              el('span', '', `${d.input_tokens} tokens`),
+              el('span', '', `${d.forward_seconds.toFixed(2)}s`));
+  if (d.stability) {
+    meta.append(el('span', '', d.stability.stable_across_permutations
+      ? `stable over ${d.stability.trials} orderings`
+      : `UNSTABLE over ${d.stability.trials} orderings`));
+    meta.append(el('span', '',
+      `spread ${d.stability.max_probability_spread.toFixed(3)}`));
+  }
+  into.append(meta);
+  into.append(el('p', 'note', d.probability_status));
+}
+
+$('#runDecide').onclick = async () => {
+  const options = readOptions();
+  $('#dErr').textContent = '';
+  if (!$('#dState').value.trim() || !$('#dCriterion').value.trim()) {
+    $('#dErr').textContent = 'Evidence and criterion are both required.'; return; }
+  if (options.length < 2) {
+    $('#dErr').textContent = 'At least two complete options are required.'; return; }
+
+  const btn = $('#runDecide');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Running';
+  const box = $('#dResult'); box.hidden = false; box.textContent = '';
+  box.append(el('div', 'empty', 'Prefilling and reading option logits…'));
+
+  const payload = {state: $('#dState').value, criterion: $('#dCriterion').value,
+    options, stability_trials: Number($('#dTrials').value) || 1};
+  const dual = $('#dMode').value === 'compare';
+  try {
+    const r = await api(dual ? '/v1/compare' : '/v1/decisions',
+      {method: 'POST', body: JSON.stringify(payload)});
+    box.textContent = '';
+    const decision = dual ? r.decision : r;
+    renderDecision(decision, box);
+    if (dual) {
+      const v = el('div', 'verdict ' + r.action);
+      v.append(el('h3', '', r.action.toUpperCase() + ' — ' + r.summary));
+      v.append(el('div', '', 'Logit channel: ' + decision.choice +
+        '   ·   Judgment channel: ' + (r.judgment.choice || 'unparsed') +
+        '   ·   ' + (r.agreement ? 'agree' : 'disagree')));
+      if (r.reasons.length) {
+        const ul = el('ul');
+        r.reasons.forEach(x => ul.append(el('li', '', x)));
+        v.append(ul);
+      }
+      box.append(v);
+      const det = el('details');
+      det.append(el('summary', '', 'Judgment reasoning'));
+      det.append(el('div', 'msg assistant', r.judgment.reasoning));
+      box.append(det);
+    }
+  } catch (e) {
+    box.textContent = ''; $('#dErr').textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Run decision';
+  }
+};
+
+/* ---- chat ---- */
+let conversationId = null;
+
+async function loadConversations() {
+  const {conversations} = await api('/v1/conversations');
+  const sel = $('#convSelect'); sel.textContent = '';
+  if (!conversations.length) {
+    sel.append(new Option('No conversations yet', ''));
+  }
+  conversations.forEach(c => {
+    const o = new Option(`${c.title} (${c.message_count})`, c.id);
+    sel.append(o);
+  });
+  if (conversationId) sel.value = conversationId;
+  else if (conversations.length) { conversationId = conversations[0].id;
+    sel.value = conversationId; }
+}
+
+$('#convSelect').onchange = async e => {
+  conversationId = e.target.value || null;
+  await loadMessages();
+};
+
+$('#newConv').onclick = async () => {
+  const r = await api('/v1/conversations',
+    {method: 'POST', body: JSON.stringify({title: 'New conversation'})});
+  conversationId = r.id;
+  await loadConversations(); $('#chatLog').textContent = '';
+};
+
+async function loadMessages() {
+  const log = $('#chatLog'); log.textContent = '';
+  if (!conversationId) return;
+  const {messages} = await api('/v1/conversations/' + conversationId);
+  messages.forEach(m => addMessage(m.role, m.content, m.citations));
+  log.scrollTop = log.scrollHeight;
+}
+
+function addMessage(role, text, citations) {
+  const log = $('#chatLog');
+  const node = el('div', 'msg ' + role, text);
+  if (citations && citations.length) {
+    const c = el('div', 'cites');
+    c.append(el('div', '', 'Sources:'));
+    citations.forEach(x => c.append(el('div', '',
+      `[#${x.marker}] ${x.filename}` + (x.page ? ` · page ${x.page}` : '') +
+      (x.heading ? ` · ${x.heading}` : ''))));
+    node.append(c);
+  }
+  log.append(node); log.scrollTop = log.scrollHeight;
+  return node;
+}
+
+$('#sendChat').onclick = send;
+$('#chatInput').onkeydown = e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send();
+};
+
+async function send() {
+  const input = $('#chatInput');
+  const question = input.value.trim();
+  if (!question) return;
+  $('#cErr').textContent = '';
+  if (!conversationId) {
+    const r = await api('/v1/conversations',
+      {method: 'POST', body: JSON.stringify({title: question.slice(0, 60)})});
+    conversationId = r.id; await loadConversations();
+  }
+  addMessage('user', question);
+  input.value = '';
+  const btn = $('#sendChat'); btn.disabled = true;
+  const pending = addMessage('assistant', '');
+  pending.innerHTML = '<span class="spin"></span>Thinking…';
+
+  try {
+    if ($('#useDocs').checked) {
+      const r = await api('/v1/knowledge/ask', {method: 'POST',
+        body: JSON.stringify({question, conversation_id: conversationId})});
+      pending.remove();
+      addMessage('assistant', r.answer, r.citations);
+      if (r.invalid_markers && r.invalid_markers.length) {
+        addMessage('event', 'Removed citations to passages that were never '
+          + 'retrieved: ' + r.invalid_markers.join(', '));
+      }
+    } else {
+      await streamAgent(question, pending);
+    }
+  } catch (e) {
+    pending.remove(); $('#cErr').textContent = e.message;
+  } finally {
+    btn.disabled = false; await loadConversations();
+  }
+}
+
+async function streamAgent(question, pending) {
+  const response = await fetch('/v1/agent/stream', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({question, conversation_id: conversationId})});
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let answered = false;
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, {stream: true});
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop();
+    for (const part of parts) {
+      const line = part.replace(/^data: /, '').trim();
+      if (!line || line === '[DONE]') continue;
+      let event; try { event = JSON.parse(line); } catch { continue; }
+      if (event.type === 'tool_call') {
+        addMessage('event', `→ ${event.tool}(${
+          Object.entries(event.arguments).map(([k, v]) =>
+            `${k}=${JSON.stringify(v).slice(0, 60)}`).join(', ')})`);
+      } else if (event.type === 'tool_result') {
+        addMessage('event', `← ${event.tool} returned`);
+      } else if (event.type === 'tool_refused' || event.type === 'tool_failed') {
+        addMessage('event', `✕ ${event.tool}: ${event.error}`);
+      } else if (event.type === 'parse_error') {
+        addMessage('event', `retrying (attempt ${event.attempt}): ${event.error}`);
+      } else if (event.type === 'confirmation_required') {
+        pending.remove(); answered = true;
+        const ok = confirm(`Allow "${event.tool}" to run with:\n\n` +
+          JSON.stringify(event.arguments, null, 2));
+        if (ok) {
+          const r = await api('/v1/agent', {method: 'POST',
+            body: JSON.stringify({question, conversation_id: conversationId,
+              approved_tools: [event.tool]})});
+          addMessage('assistant', r.answer, r.citations);
+        } else {
+          addMessage('event', 'Declined. The tool did not run.');
+        }
+      } else if (event.type === 'done') {
+        pending.remove(); answered = true;
+        addMessage('assistant', event.answer, event.citations);
+      } else if (event.type === 'error') {
+        pending.remove(); answered = true;
+        $('#cErr').textContent = event.message;
+      }
+    }
+  }
+  if (!answered) { pending.remove();
+    $('#cErr').textContent = 'The stream ended without an answer.'; }
+}
+
+$('#proposeMem').onclick = async () => {
+  if (!conversationId) return;
+  const btn = $('#proposeMem'); btn.disabled = true;
+  try {
+    const r = await api('/v1/memory/propose', {method: 'POST',
+      body: JSON.stringify({conversation_id: conversationId})});
+    addMessage('event', r.proposed.length
+      ? `Proposed ${r.proposed.length} memory item(s) — approve them under Memory.`
+      : 'Nothing in this conversation qualified as a durable memory.');
+  } catch (e) { $('#cErr').textContent = e.message;
+  } finally { btn.disabled = false; }
+};
+
+/* ---- knowledge ---- */
+$('#ingestBtn').onclick = async () => {
+  const path = $('#kPath').value.trim();
+  const msg = $('#kMsg'); msg.textContent = '';
+  if (!path) { msg.innerHTML = '<div class="err">A path is required.</div>'; return; }
+  const btn = $('#ingestBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Reading';
+  try {
+    const r = await api('/v1/knowledge/ingest', {method: 'POST',
+      body: JSON.stringify({path, collection: $('#kColl').value || 'default'})});
+    msg.innerHTML = '<div class="ok">' + esc(
+      r.status === 'ingested' ? `Added ${r.filename} — ${r.chunks} passages`
+      : r.status === 'duplicate' ? `${r.filename} is already indexed`
+      : `Added ${r.ingested} documents (${r.chunks} passages), ${r.duplicates} duplicates`
+    ) + '</div>';
+    if (r.failed && r.failed.length) {
+      msg.innerHTML += '<div class="err">' + r.failed.map(f =>
+        esc(f.file + ': ' + f.error)).join('<br>') + '</div>';
+    }
+    loadDocs();
+  } catch (e) { msg.innerHTML = '<div class="err">' + esc(e.message) + '</div>';
+  } finally { btn.disabled = false; btn.textContent = 'Ingest'; }
+};
+
+$('#searchBtn').onclick = async () => {
+  const query = $('#kQuery').value.trim();
+  const box = $('#kResults'); box.textContent = '';
+  if (!query) return;
+  try {
+    const r = await api('/v1/knowledge/search',
+      {method: 'POST', body: JSON.stringify({query})});
+    if (!r.results.length) { box.append(el('div', 'empty', 'No matches.')); return; }
+    r.results.forEach((x, i) => {
+      const c = el('div', 'verdict');
+      c.append(el('h3', '', `[${i + 1}] ${x.filename}` +
+        (x.page ? ` · page ${x.page}` : '') +
+        `   (score ${(x.rerank_score || 0).toFixed(3)})`));
+      if (x.heading) c.append(el('div', 'pill', x.heading));
+      c.append(el('div', '', x.text.slice(0, 420) + '…'));
+      box.append(c);
+    });
+  } catch (e) { box.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+};
+
+async function loadDocs() {
+  const {documents} = await api('/v1/knowledge/documents');
+  const t = $('#docTable'); t.textContent = '';
+  if (!documents.length) {
+    t.innerHTML = '<tr><td class="empty">No documents indexed yet.</td></tr>';
+    return;
+  }
+  t.innerHTML = '<tr><th>File</th><th>Type</th><th>Pages</th>'
+    + '<th>Passages</th><th></th></tr>';
+  documents.forEach(d => {
+    const tr = el('tr');
+    tr.innerHTML = `<td>${esc(d.filename)}</td>
+      <td class="mono">${esc((d.media_type || '').split('/').pop())}</td>
+      <td class="mono">${d.page_count || '—'}</td>
+      <td class="mono">${d.chunk_count}</td>`;
+    const td = el('td');
+    const b = el('button', 'ghost', 'Remove');
+    b.onclick = async () => {
+      await api('/v1/knowledge/documents/' + d.id, {method: 'DELETE'});
+      loadDocs();
+    };
+    td.append(b); tr.append(td); t.append(tr);
+  });
+}
+
+/* ---- memory ---- */
+async function loadMem() {
+  const {memories} = await api('/v1/memory');
+  const t = $('#memTable'); t.textContent = '';
+  if (!memories.length) {
+    t.innerHTML = '<tr><td class="empty">Nothing proposed or remembered yet. '
+      + 'Use “Suggest memories” in the Assistant tab.</td></tr>';
+    return;
+  }
+  t.innerHTML = '<tr><th>Memory</th><th>Status</th><th>Source</th><th></th></tr>';
+  memories.forEach(m => {
+    const tr = el('tr');
+    const text = el('td'); const input = el('input'); input.value = m.content;
+    input.onchange = () => api('/v1/memory/' + m.id,
+      {method: 'PUT', body: JSON.stringify({content: input.value})});
+    text.append(input);
+    const status = el('td'); status.append(el('span',
+      'pill ' + (m.status === 'approved' ? 'automatic'
+        : m.status === 'rejected' ? 'disabled' : 'confirm'), m.status));
+    const source = el('td', 'mono', m.provenance || '—');
+    const actions = el('td');
+    if (m.status !== 'approved') {
+      const a = el('button', 'ghost', 'Approve');
+      a.onclick = async () => { await api('/v1/memory/' + m.id,
+        {method: 'PUT', body: JSON.stringify({status: 'approved'})}); loadMem(); };
+      actions.append(a);
+    }
+    const d = el('button', 'ghost', 'Forget');
+    d.style.marginLeft = '6px';
+    d.onclick = async () => { await api('/v1/memory/' + m.id,
+      {method: 'DELETE'}); loadMem(); };
+    actions.append(d);
+    tr.append(text, status, source, actions); t.append(tr);
+  });
+}
+
+/* ---- tools ---- */
+async function loadTools() {
+  const {tools} = await api('/v1/tools');
+  const t = $('#toolTable'); t.textContent = '';
+  t.innerHTML = '<tr><th>Tool</th><th>What it does</th><th>Permission</th></tr>';
+  tools.forEach(tool => {
+    const tr = el('tr');
+    tr.append(el('td', 'mono', tool.name), el('td', '', tool.description));
+    const td = el('td');
+    const sel = el('select');
+    ['automatic', 'confirm', 'disabled'].forEach(level => {
+      const o = new Option(level, level);
+      if (level === tool.permission) o.selected = true;
+      sel.append(o);
+    });
+    sel.onchange = () => api('/v1/tools/' + tool.name,
+      {method: 'PUT', body: JSON.stringify({permission: sel.value})});
+    td.append(sel); tr.append(td); t.append(tr);
+  });
+}
+
+/* ---- audit ---- */
+async function loadAudit() {
+  const {audit} = await api('/v1/audit?limit=200');
+  const t = $('#auditTable'); t.textContent = '';
+  if (!audit.length) {
+    t.innerHTML = '<tr><td class="empty">No tool calls recorded yet.</td></tr>';
+    return;
+  }
+  t.innerHTML = '<tr><th>When</th><th>Tool</th><th>Arguments</th>'
+    + '<th>Outcome</th><th>Detail</th></tr>';
+  audit.forEach(a => {
+    const tr = el('tr');
+    tr.innerHTML = `<td class="mono">${new Date(a.created_at * 1000)
+        .toLocaleTimeString()}</td>
+      <td class="mono">${esc(a.tool)}</td>
+      <td class="mono">${esc(JSON.stringify(a.arguments).slice(0, 90))}</td>
+      <td><span class="pill ${a.decision === 'executed' ? 'automatic'
+        : a.decision === 'refused' ? 'disabled' : 'confirm'}">${
+        esc(a.decision)}</span></td>
+      <td class="mono">${esc((a.error || a.result_summary || '').slice(0, 90))}</td>`;
+    t.append(tr);
+  });
+}
+
+/* ---- boot ---- */
+(async () => {
+  try {
+    const h = await api('/healthz');
+    $('#modelName').textContent = h.model +
+      (h.embeddings.available ? '' : '  · embeddings unavailable');
+  } catch { $('#modelName').textContent = 'not connected'; }
+  await loadConversations();
+  await loadMessages();
+})();
+</script>
+</body>
+</html>

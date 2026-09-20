@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jevedge0"
+version = "0.1.0"
+description = "Typed decisions, grounded retrieval and controlled tools on Edge0"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+keywords = ["edge0", "decisions", "rag", "mlx", "local-llm", "agents"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# edge0 is intentionally not listed. It is installed from its own
+# repository (Apple Silicon / MLX only) and pinning it here would fight
+# that install. See the README for setup.
+dependencies = [
+    "numpy>=1.24",
+    "pypdf>=4.0",
+    "python-docx>=1.1",
+    "tokenizers>=0.15",
+    "huggingface_hub>=0.23",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/deesatzed/JevEdge0"
+Issues = "https://github.com/deesatzed/JevEdge0/issues"
+
+[project.scripts]
+jevedge0 = "jevedge0.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["jevedge0*"]
+
+[tool.setuptools.package-data]
+jevedge0 = ["web/*.html", "examples/*.jsonl", "examples/*.md", "examples/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: tests requiring a real Edge0 checkpoint (run with -m slow)",
+]
+addopts = "-m 'not slow'"

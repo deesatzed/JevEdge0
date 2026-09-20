@@ -1,0 +1,22 @@
+JevEdge0
+Copyright 2026 JevEdge0 contributors
+
+Licensed under the Apache License, Version 2.0.
+
+This product builds on:
+
+  Edge0 (https://github.com/Edge0-AI/Edge0)
+  Apache License 2.0
+  JevEdge0 depends on Edge0 as its inference engine. No Edge0 source is
+  redistributed in this repository.
+
+  JEV-CPU / SemIf (https://github.com/leesk212/JEV-CPU)
+  The typed-decision prompt contract and single-token answer-slot
+  validation follow this project's method. The prompt is kept identical
+  so model comparisons are not confounded by prompt differences.
+  No JEV-CPU source is redistributed here.
+
+  sentence-transformers/all-MiniLM-L6-v2
+  Apache License 2.0
+  Used for local document embeddings. Weights are downloaded at runtime
+  and are not redistributed here.
