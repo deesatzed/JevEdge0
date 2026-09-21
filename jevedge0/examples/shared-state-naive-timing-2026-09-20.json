@@ -1,0 +1,16 @@
+{
+  "t_batch_seconds": 7.544154459028505,
+  "t_shared_state_seconds": 3.0650494169676676,
+  "ratio_shared_over_batch": 0.4062813710421258,
+  "choices_identical": true,
+  "batch_choices": {
+    "strain": "high",
+    "escalate": "activate",
+    "staffing": "call_in"
+  },
+  "shared_choices": {
+    "strain": "high",
+    "escalate": "activate",
+    "staffing": "call_in"
+  }
+}

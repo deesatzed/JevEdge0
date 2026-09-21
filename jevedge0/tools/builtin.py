@@ -9,9 +9,23 @@ Two implementation notes worth stating plainly:
 * The calculator walks an ``ast`` tree and permits only arithmetic nodes.
   ``eval`` on model-produced text would be arbitrary code execution
   wearing a calculator costume.
-* The Python tool runs a subprocess with a timeout, in the workspace,
-  rather than ``exec`` in this process.  A runaway loop then costs a
-  killed child, not the workbench.
+* The Python tool (``make_python_tool``) runs in a **separate OS
+  process** with a timeout, which is real isolation against an accident:
+  a runaway loop or a crash costs a killed child process, not this
+  workbench. It is **not a security sandbox** against a deliberate
+  attempt to escape it. A plain ``subprocess.run`` with an isolated
+  interpreter (``-I``) and a trimmed environment provides none of: a
+  network namespace (the child can still make outbound connections), a
+  filesystem jail (the child can read or write any path its OS user can
+  reach, not just the workspace), a memory or CPU cap (only wall-clock
+  time is bounded), or a syscall filter (no seccomp or equivalent). Real
+  isolation against untrusted code needs a VM or container boundary,
+  which this project does not implement. ``run_python`` therefore
+  **requires explicit per-call confirmation** (see its registration
+  below) rather than running automatically -- the user sees the exact
+  code before it executes; the earlier description of it as a "sandboxed
+  workspace" overstated what the code provides, corrected here (see
+  ``ERRORS.md`` E-014).
 """
 
 from __future__ import annotations
@@ -198,6 +212,27 @@ def make_sqlite_tool(policy):
 # ---- python -------------------------------------------------------------
 
 def make_python_tool(policy, timeout_s: float = 20.0):
+    """Run Python code in a separate process. NOT a security sandbox.
+
+    Isolation actually provided: a fresh OS process (a crash or infinite
+    loop cannot corrupt or hang this workbench process), a wall-clock
+    timeout, an isolated interpreter (``-I``: ignores the user site and
+    environment-based interpreter customization), a trimmed environment,
+    and a working directory confined to the policy's workspace.
+
+    Isolation NOT provided, despite those: the child process can open any
+    outbound network connection (no network namespace); it can read or
+    write any filesystem path its OS user has permission to touch, not
+    only the workspace directory (no filesystem jail -- ``cwd`` only sets
+    where relative paths resolve from, it does not restrict absolute
+    paths); it has no memory or CPU ceiling, only a wall-clock one; and it
+    has no syscall filter (no seccomp or equivalent), so any system call
+    the OS user can make, the code can make. Untrusted code needs a VM or
+    container boundary to be safely run, which this project does not
+    implement. This is why ``run_python`` registers as ``DISABLED`` by
+    default -- see ``register_builtin_tools`` below, and ``ERRORS.md``
+    E-014 for the defect this corrects.
+    """
     def run_python(code: str):
         if not policy.workspace:
             raise PermissionDenied("no workspace configured for code execution")
@@ -311,8 +346,11 @@ def register_builtin_tools(registry, knowledge=None) -> None:
 
     registry.add(
         "run_python",
-        "Run a short Python script in the sandboxed workspace and return "
-        "its output.",
+        "Run a short Python script in a separate process and return its "
+        "output. Not a security sandbox: no network, filesystem, or "
+        "resource isolation beyond a timeout -- see make_python_tool's "
+        "docstring. Requires explicit per-call confirmation: the user sees "
+        "the exact code before it runs.",
         {"code": {"type": "string"}},
         make_python_tool(policy), CONFIRM)
 

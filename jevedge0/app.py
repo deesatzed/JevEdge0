@@ -19,6 +19,7 @@ from jevedge0.server.http import (ErrorResponse, Router, StreamingResponse,
                                   static_handler)
 from jevedge0.store.db import Store
 from jevedge0.tools.builtin import register_builtin_tools
+from jevedge0.tools.guard import ToolGuard
 from jevedge0.tools.registry import Policy, ToolRegistry
 
 DEFAULT_HOME = os.path.expanduser("~/.jevedge0")
@@ -58,7 +59,12 @@ class Workbench:
         self.policy = Policy(
             allowed_folders=allowed_folders or [self.workspace],
             workspace=self.workspace)
-        self.registry = ToolRegistry(self.store, self.policy)
+        # The guard shares this workbench's scorer and engine lock rather
+        # than creating a second one -- there is one loaded model, and a
+        # second scorer would mean a second reset-and-prefill cycle
+        # contending for the same engine state.
+        self.guard = ToolGuard(self.scorer, lock=self.lock)
+        self.registry = ToolRegistry(self.store, self.policy, guard=self.guard)
         register_builtin_tools(self.registry, self.knowledge)
         self.agent = Agent(self.client, self.registry, self.store,
                            self.knowledge)
@@ -338,5 +344,21 @@ def build_router(workbench: Workbench) -> Router:
         "audit": store.list_audit(int((kw.get("query") or {}).get("limit", 200)))})
     router.add("GET /v1/decisions/history",
                lambda **_: {"decisions": store.list_decisions()})
+
+    # --- guard ---
+    router.add("GET /v1/guard", lambda **_: {
+        "enabled": workbench.guard.enabled,
+        "trials": workbench.guard.trials,
+        "escalation": workbench.guard.escalation,
+    })
+
+    def set_guard_enabled(payload, **_):
+        payload = payload or {}
+        if "enabled" not in payload:
+            return ErrorResponse(400, "missing 'enabled'")
+        workbench.guard.enabled = bool(payload["enabled"])
+        return {"enabled": workbench.guard.enabled}
+
+    router.add("PUT /v1/guard", set_guard_enabled)
 
     return router

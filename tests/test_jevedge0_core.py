@@ -200,6 +200,42 @@ def test_sql_guard_allows_select():
     _assert_read_only("WITH t AS (SELECT 1) SELECT * FROM t")
 
 
+# ---- isolation claim honesty (GOAL_ENHANCE.md Stage 4) --------------------
+
+def test_run_python_requires_confirmation_by_default():
+    """Regression guard for ERRORS.md E-014: run_python's subprocess
+    isolation was documented as a 'sandboxed workspace' when it provides
+    no network, filesystem, memory, or syscall isolation beyond a
+    wall-clock timeout. The user explicitly chose to keep the tool
+    available but require confirmation on every call (never AUTOMATIC,
+    which would run unreviewed code with no isolation) -- this test
+    exists so the code and that choice cannot silently drift apart. If
+    someone flips this to AUTOMATIC without the user deciding that
+    again, this test catches it."""
+    from jevedge0.tools.builtin import register_builtin_tools
+    from jevedge0.tools.registry import CONFIRM, Policy, ToolRegistry
+
+    with tempfile.TemporaryDirectory() as tmp:
+        registry = ToolRegistry(policy=Policy(allowed_folders=[tmp], workspace=tmp))
+        register_builtin_tools(registry)
+        tools = {t["name"]: t for t in registry.specs(include_disabled=True)}
+        assert "run_python" in tools
+        assert tools["run_python"]["permission"] == CONFIRM
+
+
+def test_run_python_docstring_names_the_missing_protections():
+    """The corrected docstring must actually say what is missing, not
+    just remove the word 'sandbox' -- a vague correction would be just
+    as capable of drifting back into an overstatement over time."""
+    from jevedge0.tools.builtin import make_python_tool
+    doc = (make_python_tool.__doc__ or "").lower()
+    for missing_protection in ("network", "filesystem", "memory", "syscall"):
+        assert missing_protection in doc, (
+            f"make_python_tool's docstring no longer names {missing_protection!r} "
+            "as a missing protection")
+    assert "not a security sandbox" in doc
+
+
 # ---- policy --------------------------------------------------------------
 
 def test_policy_blocks_paths_outside_allowlist():

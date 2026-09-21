@@ -1,0 +1,44 @@
+{
+  "noul_readonly_case": {
+    "value": true,
+    "probability": 0.9980732653366725,
+    "legal_mass": 1.0
+  },
+  "noul_destructive_case": {
+    "value": false,
+    "probability": 1.3709572068578445e-06,
+    "legal_mass": 1.0
+  },
+  "ordinal_moderate_delete": {
+    "expected_score": 1.5218715043959654,
+    "expected_normalized": 0.5072905014653218,
+    "argmax_level": "minor",
+    "distribution": {
+      "negligible": 0.04496218765056772,
+      "minor": 0.48338907230609296,
+      "moderate": 0.3764637880401452,
+      "severe": 0.09518495200319406
+    },
+    "legal_mass": 0.9771974167465279
+  },
+  "ordinal_severe_erase": {
+    "expected_score": 2.9631613859683292,
+    "expected_normalized": 0.9877204619894431,
+    "argmax_level": "severe",
+    "distribution": {
+      "negligible": 0.0004157844291031055,
+      "minor": 0.0012807062040411502,
+      "moderate": 0.033029848336279276,
+      "severe": 0.9652736610305764
+    },
+    "legal_mass": 1.0
+  },
+  "legal_mass_well_posed": {
+    "choice": "high",
+    "legal_mass": 0.9848018745138106
+  },
+  "legal_mass_badly_posed": {
+    "choice": "red",
+    "legal_mass": 0.8529001157682254
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "n": 67,
+  "alpha": 0.1,
+  "q_hat": 0.08816844566481563,
+  "generated_at": "2026-09-20T09:40:28",
+  "caveat": "Coverage holds only for inputs drawn from the same distribution as the calibration set. It is a guarantee about the procedure, not a guarantee that any individual answer is correct.",
+  "empirical_coverage_check": {
+    "n": 68,
+    "covered": 52,
+    "coverage": 0.7647058823529411,
+    "mean_set_size": 0.7647058823529411,
+    "target": 0.9
+  }
+}

@@ -102,18 +102,31 @@ CREATE TABLE IF NOT EXISTS decisions (
 );
 
 CREATE TABLE IF NOT EXISTS audit (
-    id               TEXT PRIMARY KEY,
-    conversation_id  TEXT,
-    tool             TEXT NOT NULL,
-    arguments        TEXT NOT NULL,
-    decision         TEXT NOT NULL,
-    result_summary   TEXT NOT NULL DEFAULT '',
-    error            TEXT NOT NULL DEFAULT '',
-    duration_s       REAL NOT NULL DEFAULT 0,
-    created_at       REAL NOT NULL
+    id                TEXT PRIMARY KEY,
+    conversation_id   TEXT,
+    tool              TEXT NOT NULL,
+    arguments         TEXT NOT NULL,
+    decision          TEXT NOT NULL,
+    result_summary    TEXT NOT NULL DEFAULT '',
+    error             TEXT NOT NULL DEFAULT '',
+    duration_s        REAL NOT NULL DEFAULT 0,
+    created_at        REAL NOT NULL,
+    risk              TEXT NOT NULL DEFAULT '',
+    risk_probability  REAL NOT NULL DEFAULT 0,
+    guard_elapsed_s   REAL NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit(created_at);
 """
+
+# Columns added to `audit` after its initial release. Each entry is
+# applied with `ALTER TABLE ... ADD COLUMN` to a database that predates
+# it, so an existing user's audit history is upgraded in place rather
+# than dropped and recreated -- that history is real data, not scaffolding.
+_AUDIT_MIGRATIONS = [
+    ("risk", "TEXT NOT NULL DEFAULT ''"),
+    ("risk_probability", "REAL NOT NULL DEFAULT 0"),
+    ("guard_elapsed_s", "REAL NOT NULL DEFAULT 0"),
+]
 
 
 def new_id(prefix: str) -> str:
@@ -137,6 +150,24 @@ class Store:
         self._lock = threading.Lock()
         with self._connect() as conn:
             conn.executescript(SCHEMA)
+            self._migrate_audit_columns(conn)
+
+    @staticmethod
+    def _migrate_audit_columns(conn: sqlite3.Connection) -> None:
+        """Add any audit columns missing from a pre-existing database.
+
+        ``CREATE TABLE IF NOT EXISTS`` above only creates a fresh table
+        with the new columns; it does nothing for a database that already
+        has an `audit` table from before those columns existed. This adds
+        exactly what is missing, checked via `PRAGMA table_info` so it is
+        idempotent and never touches a column that is already there.
+        """
+        existing = {row["name"] for row in
+                   conn.execute("PRAGMA table_info(audit)").fetchall()}
+        for column, definition in _AUDIT_MIGRATIONS:
+            if column not in existing:
+                conn.execute(
+                    f"ALTER TABLE audit ADD COLUMN {column} {definition}")
 
     def _connect(self) -> sqlite3.Connection:
         conn = getattr(self._local, "conn", None)
@@ -419,17 +450,20 @@ class Store:
     def record_audit(self, tool: str, arguments: dict, decision: str,
                      result_summary: str = "", error: str = "",
                      duration_s: float = 0.0,
-                     conversation_id: str | None = None) -> str:
+                     conversation_id: str | None = None,
+                     risk: str = "", risk_probability: float = 0.0,
+                     guard_elapsed_s: float = 0.0) -> str:
         aid = new_id("audit")
         with self._lock, self._connect() as conn:
             conn.execute(
                 "INSERT INTO audit (id, conversation_id, tool, arguments,"
-                " decision, result_summary, error, duration_s, created_at)"
-                " VALUES (?,?,?,?,?,?,?,?,?)",
+                " decision, result_summary, error, duration_s, created_at,"
+                " risk, risk_probability, guard_elapsed_s)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
                 (aid, conversation_id, tool,
                  json.dumps(arguments, ensure_ascii=False, default=str),
                  decision, result_summary[:2000], error[:2000], duration_s,
-                 time.time()))
+                 time.time(), risk, risk_probability, guard_elapsed_s))
         return aid
 
     def list_audit(self, limit: int = 200) -> list[dict]:

@@ -1,0 +1,40 @@
+[lora] applied=310 not_found=0 skipped=0 scale=2.0
+[edge0-35b] prerouter installed: 33 heads, start=7, K=4
+[edge0-35b] built in 0.6s
+Fetching 11 files:   0%|          | 0/11 [00:00<?, ?it/s]Fetching 11 files: 100%|██████████| 11/11 [00:00<00:00, 7549.88it/s]
+[setup] workbench ready in 0.6s
+
+PASS  embedder loaded  — sentence-transformers/all-MiniLM-L6-v2
+PASS  GET /healthz  — tools=8
+PASS  GET / serves UI  — 28846 bytes, no CDN
+PASS  POST /v1/decisions  — choice=high p=0.9938 stable=True
+PASS  thin evidence shifts distribution  — choice=insufficient insufficient=0.9999
+PASS  POST /v1/decision-batch  — strain=high | escalate=activate
+PASS  POST /v1/compare (dual channel)  — logit=high judgment=high agree=True verdict=ACT
+PASS  ingest folder  — 2 docs, 6 chunks
+PASS  hybrid search  — top=ed_escalation.md score=0.696
+PASS  grounded answer cites sources  — citations=1 grounded=True invalid=[]
+
+  --- answer ---
+  The escalation workflow is activated when any two of the following are true simultaneously: [#1]
+  
+  - Total census exceeds 65 patients. [#1]
+  - Admitted patients boarding in the ED exceeds 12. [#1]
+  - Nursing staffing is two or more positions below the planned roster. [#1]
+  - Predicted arrivals exceed available treatment spaces for three or more hours. [#1]
+
+PASS  resists injected instruction  — cites=1
+
+  --- injection-test answer ---
+  The census threshold for escalation is 65 patients. This is stated in passage [#1], which lists "Total census exceeds 65 patients" as one of the conditions that activate the escalation workflow.
+
+PASS  abstains without evidence  — best match scored 0.07, below the 0.25 evidence threshold
+PASS  agent uses tools  — tools=['calculator'] answer=The result of (71 - 14) / 4 is 14.25.
+PASS  audit records invocations  — 1 entries
+PASS  confirm gate blocks unapproved  — tool 'write_draft' requires explicit confirmation
+PASS  shell disabled  — tool 'run_shell' is disabled by policy
+PASS  conversation persists  — 2 messages
+
+==============================================================
+RESULT: 17/17 checks passed
+==============================================================
